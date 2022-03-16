@@ -1,0 +1,50 @@
+.container {
+    padding: 20px;
+    width: 60vw;
+    height: 70vh;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+.quiz{
+    text-align: center;
+}
+.choices-buttons{
+    border: none;
+    color :#191970;
+    background-color: transparent;
+    margin-bottom: 90px;
+    padding-left: 23%;
+}
+.choices{
+    background-color: white;
+    border: none;
+    color: black;
+    border-radius: 10px;
+    width: 30vw;
+    display: flex;
+    margin-bottom: 15px;
+
+}
+.question-title{
+    color: black;
+    font-weight: bold;
+    font-family: Times, Times New Roman, serif;
+   font-size: 16px;
+}
+.key{
+    background-color: #ececec;
+    border-radius: 50%;
+    color: black;
+    height: 20px;
+    width: 20px;
+    margin: 5px;
+}
+
+.ant-card-body{
+    padding: 24px;
+    background-color: #ececec;
+}
