@@ -12,6 +12,8 @@
     padding: 40px;
     height: 500px;
     width: 400px;
+    background-color: #ececec;
+    opacity: 0.75;
 }
 
 .form-card h3{

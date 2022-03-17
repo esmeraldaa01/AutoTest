@@ -1,5 +1,5 @@
 import "./LoginPage.css"
-
+import Layout from "../Quiz/layout/layout";
 import React, {useState} from "react";
 import {Space, Button, Input} from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone,UserOutlined } from '@ant-design/icons';
@@ -27,11 +27,12 @@ const LoginPage = ({ setAuthorised }) => {
 
 
     return (
+        <Layout>
         <div className='form-card'>
             <h3>WELCOME BACK</h3>
             <h1 style={{color:"#1890ff"}}>Log into your account</h1>
             <Space direction="vertical" className='form-input'>
-                <label>Username</label>
+                <label style={{color :'black'}}>Username</label>
                 <Input label="name"
                        size="large"
                        placeholder="Enter your username"
@@ -39,7 +40,7 @@ const LoginPage = ({ setAuthorised }) => {
                        value={username}
                        onChange={(e) => setUsername(e.target.value)}
                 />
-                <label>Password</label>
+                <label style={{color :'black'}}>Password</label>
                 <Input.Password placeholder="Enter your password"
                                 iconRender={visible => (visible ? <EyeTwoTone/> : <EyeInvisibleOutlined/>)}
                                 value={password}
@@ -55,6 +56,7 @@ const LoginPage = ({ setAuthorised }) => {
                 </Button>
             </Space>
         </div>
+        </Layout>
     )
 }
 export default LoginPage;

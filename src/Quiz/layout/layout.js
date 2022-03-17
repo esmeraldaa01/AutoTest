@@ -1,6 +1,6 @@
 import React from "react";
 import video from '../layout/video.mp4';
-
+import './layout.css'
 const Layout = (props) => {
   return (
     <div className="layout">

@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import data from "../assests/data";
 import "./result.css";
 import { Card } from "antd";
-import { Button, Divider } from "antd";
+import { Button } from "antd";
 import { Modal } from "antd";
 import {  CaretRightOutlined } from "@ant-design/icons";
+
 
 const Result = ({authorised}) => {
   const [result, setResult] = useState();
@@ -97,6 +98,7 @@ const Result = ({authorised}) => {
         </Modal>
       </Card>
     </div>
+
   );
 };
 export default Result;

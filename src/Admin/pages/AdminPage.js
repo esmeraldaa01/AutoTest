@@ -1,4 +1,3 @@
-import Layout from "../../Quiz/layout/layout";
 import data from "../../assests/data";
 import QuestionsTable from "./QuestionsTable";
 import React, {useEffect, useState} from "react";

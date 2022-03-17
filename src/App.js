@@ -5,21 +5,24 @@ import Result from './Quiz/Result'
 import AdminPage from "./Admin/pages/AdminPage";
 import LoginPage from "./Login/LoginPage";
 import {useState} from "react";
+import GraphicResult from "./Quiz/graphicResult";
 
 function App() {
     const [authorised , setAuthorised] = useState({
         admin : false ,
         quiz : false ,
     })
-  return (
 
+  return (
+      <Layout>
         <Routes>
             <Route path = "/"  element={<LoginPage setAuthorised={setAuthorised}  />} />
           <Route path = "/quiz"  element={<Quiz authorised={authorised} />} />
-
                 <Route path = "/result"  element={<Result authorised={authorised}/>} />
             <Route path = "/admin"  element={<AdminPage authorised={authorised} />} />
+            <Route path = "/chart"  element={<GraphicResult  />} />
         </Routes>
+       </Layout>
   );
 }
 
