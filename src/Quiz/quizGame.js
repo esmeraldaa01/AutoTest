@@ -9,7 +9,7 @@ const Quiz = () => {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [arrayOfChoices, setarrayOfChoices] = useState([]);
-  const [questions, setQuestions] = useState([]); //kshu
+  const [questions, setQuestions] = useState([]);
   let navigate = useNavigate();
 
   const handleClick = (choice) => {

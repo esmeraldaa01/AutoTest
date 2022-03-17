@@ -74,14 +74,6 @@ const Result = () => {
           onCancel={handleCancel}
         >
           {history?.map((question) => {
-            // console.log({
-            //   correct:
-            //     question.isCorrect === true
-            //       ? setColor("green")
-            //       : setColor("red"),
-            // });
-
-            //behet simple me nje variabel pa set
 
             const color =  question.isCorrect ? "green" : "red";
 
