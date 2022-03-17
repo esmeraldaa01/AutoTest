@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import data from "../assests/data";
+import 'chart.js/auto'
 import "./result.css";
 import { Card } from "antd";
 import { Button } from "antd";
 import { Modal } from "antd";
 import {  CaretRightOutlined } from "@ant-design/icons";
 import {Doughnut} from "react-chartjs-2";
-
 
 const Result = ({authorised}) => {
   const [result, setResult] = useState();
@@ -39,7 +38,7 @@ const Result = ({authorised}) => {
         count++;
       }
     }
-    return count;
+    return (count/history.length)*100
   }
 
   const  getTrueCount1 = () => {
@@ -49,7 +48,7 @@ const Result = ({authorised}) => {
         count++;
       }
     }
-    return count;
+    return (count/history.length)*100
   }
 
 
