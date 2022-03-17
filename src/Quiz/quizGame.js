@@ -1,31 +1,40 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import "./quiz.css";
 import { Divider } from "antd";
 import { useNavigate } from "react-router-dom";
-import data from "../assests/data";
 import { Card, Button } from "antd";
 
-const Quiz = () => {
+const Quiz = ({authorised}) => {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [arrayOfChoices, setarrayOfChoices] = useState([]);
+  const [testQuestions , setTestQuestions] = useState([])
   const [questions, setQuestions] = useState([]);
   let navigate = useNavigate();
 
+  useEffect(() => {
+    if(authorised.quiz === false){
+      navigate(`/`)
+    }
+  })
+
+  useEffect(() => {
+    const adminQuestion = localStorage.getItem("questions");
+    const questionss = JSON.parse(adminQuestion);
+    setTestQuestions(questionss)
+  }, [])
+console.log(testQuestions , 'd')
   const handleClick = (choice) => {
     arrayOfChoices.push(choice.key);
 
-    if (arrayOfChoices.length === data[index].answer.length) {
-      if (
-        JSON.stringify(arrayOfChoices) === JSON.stringify(data[index].answer)
-      ) {
+    if (arrayOfChoices.length === testQuestions[index].answer.length) {
+      if (JSON.stringify(arrayOfChoices) === JSON.stringify(testQuestions[index].answer)) {
         setScore(score + 1);
-        debugger;
         setQuestions([
           ...questions,
           {
-            title: data[index].title,
-            answer: data[index].answer,
+            title: testQuestions[index].title,
+            answer: testQuestions[index].answer,
             choices: arrayOfChoices,
             isCorrect: true,
           },
@@ -34,8 +43,8 @@ const Quiz = () => {
         setQuestions([
           ...questions,
           {
-            title: data[index].title,
-            answer: data[index].answer,
+            title: testQuestions[index].title,
+            answer: testQuestions[index].answer,
             choices: arrayOfChoices,
             isCorrect: false,
           },
@@ -45,7 +54,7 @@ const Quiz = () => {
     setIndex(index + 1);
   };
 
-  if (index === data.length) navigate("/result"); 
+  if (index === testQuestions.length) navigate("/result");
   localStorage.setItem("quizResult", JSON.stringify(questions));
   localStorage.setItem("scores", score);
 
@@ -53,13 +62,13 @@ const Quiz = () => {
     <div className="container">
       <Card bordered={false} style={{ width: 900 }}>
         <h2>
-          Question {index} of {data.length}
+          Question {index} of {testQuestions.length}
         </h2>
         <div>
-          <p className="question-title"> {data[index]?.title}</p>
+          <p className="question-title"> {testQuestions[index]?.title}</p>
           <Divider />
           <div className="choices-buttons">
-            {data[index]?.choices.map((choice) => (
+            {testQuestions[index]?.choices.map((choice) => (
               <Button
                 key={choice.key}
                 onClick={() => handleClick(choice)}

@@ -33,12 +33,10 @@
 }
 .title{
     font-size: 15px;
-    /*border-top: 1px solid #dcd1d1;*/
-    /*font-weight: 600;*/
 }
 .horizontal{
     display: flex;
-gap : 10px;
+    gap : 10px;
 }
 .reset-btn{
     border-radius: 120px;
@@ -49,4 +47,19 @@ gap : 10px;
     border-radius: 120px;
     height: 50px;
     width: 220px;
+}
+.history{
+    border-radius: 120px;
+    height: 47px;
+    width: 210px;
+    margin-top: 4px;
+}
+.ant-card-body {
+    padding: 24px;
+    background-color: #ececec;
+    border-radius: 15px;
+
+}
+.ant-card{
+    background-color: transparent;
 }

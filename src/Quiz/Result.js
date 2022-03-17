@@ -5,15 +5,19 @@ import "./result.css";
 import { Card } from "antd";
 import { Button, Divider } from "antd";
 import { Modal } from "antd";
-import { ReloadOutlined, CaretRightOutlined } from "@ant-design/icons";
+import {  CaretRightOutlined } from "@ant-design/icons";
 
-const Result = () => {
+const Result = ({authorised}) => {
   const [result, setResult] = useState();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [history, setHistory] = useState([]);
-//   const [color, setColor] = useState("");
   let navigate = useNavigate();
 
+  useEffect(() => {
+    if(authorised.quiz === false){
+      navigate(`/`)
+    }
+  })
   useEffect(() => {
     const result = localStorage.getItem("scores");
     const quizResult = JSON.parse(result);
@@ -26,17 +30,14 @@ const Result = () => {
     setHistory(quizHistory);
   }, []);
 
-  const handleClick = () => {
-    localStorage.removeItem("scores");
-    localStorage.removeItem("quizResult");
-    setResult(0);
-  };
+
   const handleClickRestart = () => {
     navigate("/quiz");
   };
 
   const showModal = () => {
     setIsModalVisible(true);
+    if(result === data.length) setIsModalVisible(false);
   };
 
   const handleOk = () => {
@@ -55,41 +56,29 @@ const Result = () => {
           You score {result} of {data.length}
         </p>
         <div className="buttons">
-          <Button className="reset-btn" onClick={handleClick}>
-            {" "}
-            <ReloadOutlined /> Reset Score
-          </Button>
           <Button className="back-btn" onClick={handleClickRestart}>
             <CaretRightOutlined />
             Back to quiz
           </Button>
+          <Button className='history' type="danger" onClick={showModal}>
+            View History
+          </Button>
         </div>
-        <Button type="danger" onClick={showModal}>
-          View History
-        </Button>
         <Modal
           title="Quiz history"
           visible={isModalVisible}
           onOk={handleOk}
-          onCancel={handleCancel}
-        >
+          onCancel={handleCancel}>
+
           {history?.map((question) => {
-
             const color =  question.isCorrect ? "green" : "red";
-
             return (
               <div>
-                <p style={{ color: `${color}` }} className="title">
-                  {question.title}
-                </p>
-                {question.isCorrect === true && (
-                  <div className="horizontal">
-                    <label>Correct answer : </label>
-                    <p style={{ color: `${color}` }}>{question.choices}</p>
-                  </div>
-                )}
                 {question.isCorrect === false && (
                   <div>
+                    <p style={{ color: `${color}` }} className="title">
+                      {question.title}
+                    </p>
                     <div className="horizontal">
                       <label>Your choice : </label>
                       <p>{question.choices.join(",")}</p>
