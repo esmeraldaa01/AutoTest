@@ -37,7 +37,8 @@ const Quiz = ({authorised}) => {
           {
             title: questions[index].title,
             answer: questions[index].answer,
-            choices: arrayOfChoices,
+            userChoice: arrayOfChoices,
+            options : questions[index].choices,
             isCorrect: true,
           },
         ]);
@@ -47,7 +48,8 @@ const Quiz = ({authorised}) => {
           {
             title: questions[index].title,
             answer: questions[index].answer,
-            choices: arrayOfChoices,
+            userChoice: arrayOfChoices,
+            options : questions[index].choices,
             isCorrect: false,
           },
         ]);
