@@ -45,7 +45,7 @@ const Quiz = () => {
     setIndex(index + 1);
   };
 
-  if (index === data.length) navigate("/result"); //po m thuaj ku esht prblm se dua ta ndryshoj vet, tani cila nga ato eshte e sakte alternativat
+  if (index === data.length) navigate("/result"); 
   localStorage.setItem("quizResult", JSON.stringify(questions));
   localStorage.setItem("scores", score);
 
