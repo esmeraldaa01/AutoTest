@@ -110,26 +110,10 @@ const Result = ({authorised}) => {
           onCancel={handleCancel}>
 
           {history?.map((question) => {
-            const color =  question.isCorrect ? "green" : "red";
             return (
               <div>
-                {question.isCorrect === false && (
-                  <div>
-                    <p style={{ color: `${color}` }} className="title">
-                      {question.title}
-                    </p>
-                    <div className="horizontal">
-                      <label>Your choice : </label>
-                      <p>{question.choices.join(",")}</p>
-                    </div>
-                    <div className="horizontal">
-                      <label>Correct Answer : </label>
-                      <p className="correct-answer" style={{ color: "green" }}>
-                        {question.answer.join(",")}
-                      </p>
-                    </div>
-                  </div>
-                )}
+                {question.title}
+                {question.choices}
               </div>
             );
           })}
