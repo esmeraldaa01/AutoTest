@@ -6,6 +6,7 @@ import { Card } from "antd";
 import { Button } from "antd";
 import { Modal } from "antd";
 import {  CaretRightOutlined } from "@ant-design/icons";
+import {Doughnut} from "react-chartjs-2";
 
 
 const Result = ({authorised}) => {
@@ -31,6 +32,41 @@ const Result = ({authorised}) => {
     setHistory(quizHistory);
   }, []);
 
+  const  getTrueCount = () => {
+    let count = 0;
+    for (let i = 0; i < history.length; i++) {
+      if (history[i].isCorrect === true) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  const  getTrueCount1 = () => {
+    let count = 0;
+    for (let i = 0; i < history.length; i++) {
+      if (history[i].isCorrect === false) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+
+  const data = {
+    datasets: [{
+      data: [getTrueCount(), getTrueCount1()],
+      backgroundColor:[
+        'green',
+        'red'
+      ]
+    },
+    ],
+    labels: [
+      'Correct',
+      'Wrong'
+    ],
+  };
 
   const handleClickRestart = () => {
     navigate("/quiz");
@@ -56,6 +92,9 @@ const Result = ({authorised}) => {
         <p className="result-header">
           You score {result} of {data.length}
         </p>
+   <div className='chart'>
+        <Doughnut  data={data}/>
+   </div>
         <div className="buttons">
           <Button className="back-btn" onClick={handleClickRestart}>
             <CaretRightOutlined />
