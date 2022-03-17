@@ -9,6 +9,7 @@
     transform: translate(-50%, -50%);
     text-align: center;
     align-items: center;
+    opacity: 0.9;
 }
 .card{
     padding-bottom: 90px;
