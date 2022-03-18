@@ -1,18 +1,21 @@
-import React, { useState } from "react";
-import { Input, Button, Space, Select } from "antd";
-import { FormOutlined } from "@ant-design/icons";
+import React, {useState} from "react";
+import {Input, Button, Space, Select} from "antd";
+import {FormOutlined} from "@ant-design/icons";
 import Choices from "./Choices";
 import "../styles/QuestionForm.css";
+import {Modal} from "antd";
 
 const QuestionForm = ({
                           errorCreate,
                           onSubmit,
+                          closeModal,
                           onCancel,
                           currentQuestion,
+                          isModalVisible,
                       }) => {
 
     const [question, setQuestion] = useState(() => {
-        const initialState = { title: "", answer: [], choices: []}; //
+        const initialState = {title: "", answer: [], choices: []}; //
 
         if (currentQuestion) {
             initialState.title = currentQuestion.title;
@@ -27,7 +30,7 @@ const QuestionForm = ({
     const [errorEditing, setErrorEditing] = useState({
         title: null,
         answer: [],//
-        choices : []
+        choices: []
     });
 
 
@@ -65,7 +68,7 @@ const QuestionForm = ({
         const fieldName = event.target.getAttribute("name");
         const fieldValue = event.target.value;
 
-        const newForm = { ...question };
+        const newForm = {...question};
         newForm[fieldName] = fieldValue;
         setQuestion(newForm);
     };
@@ -115,67 +118,82 @@ const QuestionForm = ({
 
     const handleSave = () => {
         onSubmit(question);
-        if(!question.title && !question.answer && question.choices.length <= 2){
+        if (!question.title && !question.answer && question.choices.length <= 2) {
             setErrorEditing({
                 title: "Question Title is required!",
                 answer: "Question Answer is required!",
-                choices: "Insert at least two choices and choose an answer."})
-            return;
-        } else if(!question.title && !question.answer && (checkChoices(question.choices))){
-            setErrorEditing({
-                title: "Question Title is required!",
-                answer: "Question Answer is required!",
-                choices : "Fill options !"
+                choices: "Insert at least two choices and choose an answer."
             })
             return;
-        }else if(!question.title && !question.answer && (checkChoices(question.choices))){
+        } else if (!question.title && !question.answer && (checkChoices(question.choices))) {
             setErrorEditing({
                 title: "Question Title is required!",
                 answer: "Question Answer is required!",
-                choices : "Fill options !"
+                choices: "Fill options !"
             })
             return;
-        } else if(!question.answer && checkChoices(question.choices)){
+        } else if (!question.title && !question.answer && (checkChoices(question.choices))) {
+            setErrorEditing({
+                title: "Question Title is required!",
+                answer: "Question Answer is required!",
+                choices: "Fill options !"
+            })
+            return;
+        } else if (!question.answer && checkChoices(question.choices)) {
             setErrorEditing({
                 choices: "Please fill the options !",
-                answer: "Question Answer is required!"})
+                answer: "Question Answer is required!"
+            })
             return;
-        } else if(question.title && !question.answer){
+        } else if (question.title && !question.answer) {
             setErrorEditing({
                 title: "Answer Title is required! Please choose an answer."
             })
             return;
-        }else if((!question || !question.answer) && question.choices.length < 2) {
+        } else if ((!question || !question.answer) && question.choices.length < 2) {
             setErrorEditing({
                 choices: "Insert at least two choices and choose an answer."
             });
             return;
-        }else if(!question.answer && question.choices.length >= 2 && (!checkChoices(question.choices)))  {
+        } else if (!question.answer && question.choices.length >= 2 && (!checkChoices(question.choices))) {
             setErrorEditing({
                 title: "Question Answer is required! Choose an answer."
             })
             return;
-        }else if (checkChoices(question.choices)) {
+        } else if (checkChoices(question.choices)) {
             setErrorEditing({
                 choices: "Choice Title and Choice Key are required. Please fill the options!"
             });
             return;
-        }else if (!question.title && question.answer && question.choices.length !== 0) {
+        } else if (!question.title && question.answer && question.choices.length !== 0) {
             setErrorEditing({
                 title: "Question Title is required! Please write a question title."
             });
             return;
-        }
-        else setErrorEditing({title: null, answer: [] , choices : []}); //
+        } else setErrorEditing({title: null, answer: [], choices: []}); //
 
-        setQuestion({ title: "", answer: [], choices: [], id: 0 }); //
+
+        setQuestion({title: "", answer: [], choices: [], id: 0}); //
+        closeModal();
     };
 
 
-    const { Option } = Select;
+    const {Option} = Select;
+
 
     return (
-        <div className="form-container">
+        <Modal
+            visible={isModalVisible}
+            footer={<>
+                <Button style={{marginRight: '7px'}} shape="round" onClick={handleSave}>
+                    Save
+                </Button>
+                <Button danger shape="round" onClick={onCancel}>
+                    Cancel
+                </Button>
+            </>}
+            width={700}
+            onCancel={closeModal}>
             <form>
                 <Space direction="vertical">
                     <label>Question Title </label>
@@ -186,22 +204,22 @@ const QuestionForm = ({
                         value={question.title}
                         onChange={handleChange}
                         placeholder=" Enter the question..."
-                        addonBefore={<FormOutlined />}
+                        addonBefore={<FormOutlined/>}
                     />
                     <label>Correct Answer</label>
 
                     <Select
-                        style={{width : '100%'}}
+                        style={{width: '100%'}}
                         mode={"multiple"}
                         showSearch
+                        disabled={question.choices.length === 0}
                         placeholder="Select the correct answer"
                         value={question.answer || []}
                         onChange={onAnswerChange}
                         optionFilterProp="children"
                         filterOption={(input, option) =>
                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                    >
+                        }>
                         {question.choices.map((choice, index) => {
                             return (
                                 <Option key={index} value={choice.key}>
@@ -219,7 +237,7 @@ const QuestionForm = ({
                 </Space>
             </form>
             <div>
-                <p style={{ color: "red",fontSize: '16px ',  display:'flex', flexDirection:'column'}}>
+                <p style={{color: "red", fontSize: '16px ', display: 'flex', flexDirection: 'column'}}>
                     <p>{errorCreate?.title}</p>
                     <p>{errorCreate?.answer}</p>
                     <p>{errorCreate?.choices}</p>
@@ -227,14 +245,8 @@ const QuestionForm = ({
                     <p>{currentQuestion && errorEditing?.title}</p>
                     <p>{currentQuestion && errorEditing?.choices}</p>
                 </p>
-                <Button style={{marginRight : '7px'}} shape="round" onClick={handleSave}>
-                    Save
-                </Button>
-                <Button danger shape="round" onClick={onCancel}>
-                    Cancel
-                </Button>
             </div>
-        </div>
+        </Modal>
     );
 };
 

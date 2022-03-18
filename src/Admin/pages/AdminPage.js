@@ -8,9 +8,10 @@ const cloneArray = (list) => {
     return list.map((object) => ({...object}));
 };
 
-const AdminPage = ({ authorised }) => {
+const AdminPage = ({authorised}) => {
     const [create, setCreate] = useState(false);
-    const [questions, setQuestions] = useState(()=>{
+
+    const [questions, setQuestions] = useState(() => {
 
         const cacheQuestions = localStorage.getItem("questions");
 
@@ -21,10 +22,12 @@ const AdminPage = ({ authorised }) => {
     });
     const [editableQuestion, setEditableQuestion] = useState(null);
     const [errorCreate, setErrorCreate] = useState({title: null, answer: [], choices: []}); //
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
     let navigate = useNavigate();
 
     useEffect(() => {
-        if(authorised.admin === false){
+        if (authorised.admin === false) {
             navigate(`/`)
         }
     })
@@ -49,50 +52,72 @@ const AdminPage = ({ authorised }) => {
         setCreate(false);
     };
 
-    const checkChoices = (choices) => {
-        let foundError = false;
+    const invalidChoiceLength = (choices) => {
+        return (choices.length < 2) ? "Insert at least 2 options!" : null;
+    }
+
+    const validChoices = (choices) => {
+
+        let errorMessage = null;
+
         choices.forEach((choice) => {
-            if (choice.title === "" || choice.key === "") {
-                foundError = true;
-            }
+            if (choice.title === "" || choice.key === "")
+                errorMessage = "Please fill the options!";
         });
-        return foundError;
+
+        return errorMessage;
+    };
+
+    const closeModal = () => {
+        setIsModalVisible(false);
     };
 
     const onSubmit = (question) => {
-        if (!question.title && !question.answer) {
-            setErrorCreate({
-                title: "Please fill the name!  ",
-                answer: "Please select an answer ! ",
-                choices: "Insert at least 2 choices !  Please Fill options! "
-            });
-            return;
-        } else setErrorCreate({title: null, answer: [], choices: null}); //
+
         if (!question.title) {
             setErrorCreate({
                 ...errorCreate,
                 title: "Please fill the name! "
             });
             return;
-        } else setErrorCreate({...errorCreate, title: null});
-        if (question.choices.length < 2) {
-            setErrorCreate({
-                choices: "Insert at least 2 options! "
-            });
-            return;
-        } else setErrorCreate({title: null, answer: [], choices: []}); //
-        if (checkChoices(question.choices)) {
-            setErrorCreate({
-                choices: "Please fill the options! "
-            });
-            return;
-        } else setErrorCreate({title: null, answer: [], choices: []}) //
+        }
+
         if (!question.answer) {
             setErrorCreate({
                 answer: "Please fill the answer! "
             });
             return;
-        } else setErrorCreate({title: null, answer: [], choices: []}) //
+        }
+
+        if (question.choices.length < 2) {
+            setErrorCreate({
+                choices: "Insert at least 2 options!"
+            });
+            return;
+        }
+
+        if (!validChoices(question.choices)) {
+            setErrorCreate({
+                choices: "Please fill the options! "
+            });
+            return;
+        }
+
+
+        // if (!question.title && !question.answer) {
+        //     setErrorCreate({
+        //         title: "Please fill the title of the question!",
+        //         answer: "Please select an answer for the question!",
+        //         choices: "Insert at least 2 choices!  Please Fill options!"
+        //     });
+        //     return;
+        //
+        // } else
+        //     setErrorCreate({title: null, answer: [], choices: null}); //
+        setErrorCreate({...errorCreate, title: null});
+        setErrorCreate({title: null, answer: [], choices: []}); //
+        setErrorCreate({title: null, answer: [], choices: []}) //
+        setErrorCreate({title: null, answer: [], choices: []}) //
 
         return editableQuestion ? onEdit(question) : onCreate(question);
     };
@@ -100,6 +125,7 @@ const AdminPage = ({ authorised }) => {
     const onCancel = () => {
         if (editableQuestion) setEditableQuestion(null);
         else setCreate(null);
+        closeModal();
     };
 
     const onDelete = (record) => {
@@ -111,12 +137,14 @@ const AdminPage = ({ authorised }) => {
     const onQuestionCreate = () => {
         if (editableQuestion) setEditableQuestion(null);
         setCreate(true);
+        setIsModalVisible(true);
     };
 
     const onQuestionEdit = (record) => {
         if (create) setCreate(false);
         setEditableQuestion(record);
         if (editableQuestion) setEditableQuestion(null);
+        setIsModalVisible(true);
     };
 
     useEffect(() => {
@@ -129,15 +157,19 @@ const AdminPage = ({ authorised }) => {
             <div>
                 {editableQuestion && !create && (
                     <QuestionForm
+                        isModalVisible={isModalVisible}
                         onSubmit={onSubmit}
                         onCancel={onCancel}
+                        closeModal={closeModal}
                         create={create}
                         currentQuestion={editableQuestion}
                     />
                 )}
                 {!editableQuestion && create && (
                     <QuestionForm
+                        isModalVisible={isModalVisible}
                         onSubmit={onSubmit}
+                        closeModal={closeModal}
                         onCancel={onCancel}
                         errorCreate={errorCreate}
                     />
@@ -152,7 +184,6 @@ const AdminPage = ({ authorised }) => {
                     onCreate={onQuestionCreate}
                 />
             </div>
-
         </div>
     );
 };

@@ -1,134 +1,92 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "chart.js/auto";
+import React, {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import "./result.css";
-import { Card } from "antd";
-import { Button } from "antd";
-import { Modal } from "antd";
-import { CaretRightOutlined } from "@ant-design/icons";
-import { Doughnut } from "react-chartjs-2";
+import {Card} from "antd";
+import {Button} from "antd";
+import {Modal} from "antd";
+import {CaretRightOutlined} from "@ant-design/icons";
+import ChartResults from "./QuizResults/ChartResults";
 
-const Result = ({ authorised }) => {
-  const [result, setResult] = useState();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [history, setHistory] = useState([]);
-  let navigate = useNavigate();
+const Result = ({authorised}) => {
+    const [result, setResult] = useState([]);
+    const [quizHistory, setQuizHistory] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
-  useEffect(() => {
-    if (authorised.quiz === false) {
-      navigate(`/`);
+    let navigate = useNavigate();
+
+    useEffect(() => {
+        if (authorised.quiz === false) {
+            navigate(`/`);
+        }
+    });
+    useEffect(() => {
+        const scores = localStorage.getItem("scores");
+        const quizResult = localStorage.getItem("quizResult");
+        setResult(JSON.parse(scores));
+        setQuizHistory(JSON.parse(quizResult));
+    }, []);
+
+    const handleClickRestart = () => {
+        navigate("/quiz");
+    };
+
+    const showModal = () => {
+        setIsModalVisible(true);
+    };
+
+    const closeModal = () => {
+        setIsModalVisible(false);
     }
-  });
-  useEffect(() => {
-    const result = localStorage.getItem("scores");
-    const quizResult = JSON.parse(result);
-    setResult(quizResult);
-  }, []);
 
-  useEffect(() => {
-    const quizHis = localStorage.getItem("quizResult");
-    const quizHistory = JSON.parse(quizHis);
-    setHistory(quizHistory);
-  }, []);
-
-  const getTrueCount = () => {
-    let count = 0;
-    for (let i = 0; i < history.length; i++) {
-      if (history[i].isCorrect === true) {
-        count++;
-      }
+    const getOptionColor = (correct, notSelected) => {
+        return correct ? "green" : notSelected ? "black" : "red";
     }
-    return (count / history.length) * 100;
-  };
 
-  const getTrueCount1 = () => {
-    let count = 0;
-    for (let i = 0; i < history.length; i++) {
-      if (history[i].isCorrect === false) {
-        count++;
-      }
-    }
-    return (count / history.length) * 100;
-  };
-
-  const data = {
-    datasets: [
-      {
-        data: [`${getTrueCount()}`, `${getTrueCount1()}`],
-        backgroundColor: ["green", "red"],
-      },
-    ],
-    labels: ["Correct", "Wrong"],
-  };
-
-  const handleClickRestart = () => {
-    navigate("/quiz");
-  };
-
-  const showModal = () => {
-    setIsModalVisible(true);
-    if (result === data.length) setIsModalVisible(false);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  return (
-    <div className="container-res">
-      <Card className="card" bordered={false}>
-        <p className="result-header">
-          You score {result} of {history.length}
-        </p>
-        <div className="chart">
-          <Doughnut data={data} />
+    return (
+        <div className="container-res">
+            <Card className="card" bordered={false}>
+                <p className="result-header">
+                    You scored {result} of {quizHistory.length}
+                </p>
+                <div className="chart">
+                    <ChartResults quizHistory={quizHistory}/>
+                </div>
+                <div className="buttons">
+                    <Button className="back-btn" onClick={handleClickRestart}>
+                        <CaretRightOutlined/>
+                        Back to quiz
+                    </Button>
+                    <Button className="quizHistory" type="danger" onClick={showModal}>
+                        View Quiz History
+                    </Button>
+                </div>
+                <Modal
+                    closable
+                    footer={null}
+                    title="Quiz History"
+                    visible={isModalVisible}
+                    onCancel={closeModal}>
+                    {quizHistory?.map((question) => {
+                        return (
+                            <div>
+                                {question.title}
+                                {question.options.map((option) => {
+                                    const isOptionCorrect = question.answer.indexOf(option.key) !== -1;
+                                    const isNotSelected = question.userChoice.indexOf(option.key) == -1;
+                                    return (
+                                        <p style={{
+                                            color: getOptionColor(isOptionCorrect, isNotSelected)
+                                        }}>
+                                            {option.key}
+                                        </p>
+                                    );
+                                })}
+                            </div>
+                        );
+                    })}
+                </Modal>
+            </Card>
         </div>
-        <div className="buttons">
-          <Button className="back-btn" onClick={handleClickRestart}>
-            <CaretRightOutlined />
-            Back to quiz
-          </Button>
-          <Button className="history" type="danger" onClick={showModal}>
-            View History
-          </Button>
-        </div>
-        <Modal
-          title="Quiz history"
-          visible={isModalVisible}
-          onOk={handleOk}
-          onCancel={handleCancel}
-        >
-          {history?.map((question) => {
-            return (
-              <div>
-                {question.title}
-                {question.options.map((x) => {
-                  const isOptionCorrect = question.answer.indexOf(x.key) !== -1;
-                  const isNotOption = question.userChoice.indexOf(x.key) == -1; 
-                  return (
-                      <p
-                        style={{
-                          color: isOptionCorrect
-                            ? "green"
-                            : isNotOption
-                            ? "black"
-                            : "red",
-                        }}
-                      >
-                        {x.key}
-                      </p>
-                  );
-                })}
-              </div>
-            );
-          })}
-        </Modal>
-      </Card>
-    </div>
-  );
+    );
 };
 export default Result;

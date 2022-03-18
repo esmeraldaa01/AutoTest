@@ -1,93 +1,93 @@
-import React, { useState , useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import "./quiz.css";
-import { Divider } from "antd";
-import { useNavigate } from "react-router-dom";
-import { Card, Button } from "antd";
+import {Divider} from "antd";
+import {useNavigate} from "react-router-dom";
+import {Card, Button} from "antd";
 
 
 const Quiz = ({authorised}) => {
-  const [index, setIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [arrayOfChoices, setarrayOfChoices] = useState([]);
-  const [questions , setQuestions] = useState([])
-  const [checkAnswer, setCheckAnswers] = useState([]);
-  let navigate = useNavigate();
 
-  useEffect(() => {
-    if(authorised.quiz === false){
-      navigate(`/`)
+    const [questionIndex, setQuestionIndex] = useState(0);
+    const [score, setScore] = useState(0);
+    const [arrayOfChoices, setArrayOfChoices] = useState([]);
+    const [questions, setQuestions] = useState([])
+    const [quizResult, setQuizResults] = useState([]);
+    let navigate = useNavigate();
+
+    useEffect(() => {
+        if (authorised.quiz === false) {
+            navigate(`/`)
+        }
+    })
+
+    useEffect(() => {
+        const adminQuestion = localStorage.getItem("questions");
+        setQuestions(JSON.parse(adminQuestion))
+    }, [])
+
+    const onUpdatingResults = (isCorrect) => {
+        setQuizResults([
+            ...quizResult,
+            {
+                title: questions[questionIndex].title,
+                answer: questions[questionIndex].answer,
+                userChoice: arrayOfChoices,
+                options: questions[questionIndex].choices,
+                isCorrect: isCorrect,
+            },
+        ]);
     }
-  })
-
-  useEffect(() => {
-    const adminQuestion = localStorage.getItem("questions");
-    const questionss = JSON.parse(adminQuestion);
-    setQuestions(questionss)
-  }, [])
 
 
-  const handleClick = (choice) => {
-    arrayOfChoices.push(choice.key);
+    const onChoiceSelect = (choice) => {
+        arrayOfChoices.push(choice.key);
 
-    if (arrayOfChoices.length === questions[index].answer.length) {
-      if (JSON.stringify(arrayOfChoices) === JSON.stringify(questions[index].answer)) {
-        setScore(score + 1);
-        setCheckAnswers([
-          ...checkAnswer,
-          {
-            title: questions[index].title,
-            answer: questions[index].answer,
-            userChoice: arrayOfChoices,
-            options : questions[index].choices,
-            isCorrect: true,
-          },
-        ]);
-      } else
-        setCheckAnswers([
-          ...checkAnswer,
-          {
-            title: questions[index].title,
-            answer: questions[index].answer,
-            userChoice: arrayOfChoices,
-            options : questions[index].choices,
-            isCorrect: false,
-          },
-        ]);
-      setarrayOfChoices([]);
-    } else return;
-    setIndex(index + 1);
-  };
+        if (arrayOfChoices.length === questions[questionIndex].answer.length) {
 
-  if (index === questions.length) navigate("/result");
-  localStorage.setItem("quizResult", JSON.stringify(checkAnswer));
-  localStorage.setItem("scores", score);
+            //TODO: CHECK THE ORDER OF CORRECT ANSWERS
+            if (JSON.stringify(arrayOfChoices) === JSON.stringify(questions[questionIndex].answer)) {
+                setScore(score + 1);
+                onUpdatingResults(true);
+            } else
+                onUpdatingResults(false);
+        } else
+            return;
+        setArrayOfChoices([]);
+        setQuestionIndex(questionIndex + 1);
+    };
 
-  return (
-    <div className="container">
-      <Card bordered={false} style={{ width: 900 }}>
-        <h2>
-          Question {index} of {questions.length}
-        </h2>
-        <div>
-          <p className="question-title"> {questions[index]?.title}</p>
-          <Divider />
-          <div className="choices-buttons">
-            {questions[index]?.choices.map((choice) => (
-              <Button
-                key={choice.key}
-                onClick={() => handleClick(choice)}
-                className="choices"
-              >
-                <p className="key">{choice.key}</p>
-                <p style={{ paddingLeft: "40%", margin: "5px" }}>
-                  {choice.title}
-                </p>
-              </Button>
-            ))}
-          </div>
+    if (questionIndex === questions.length)
+        navigate("/result");
+
+    localStorage.setItem("quizResult", JSON.stringify(quizResult));
+    localStorage.setItem("scores", JSON.stringify(score));
+
+    return (
+        <div className="container">
+            <Card bordered={false} style={{width: 900}}>
+                <h2>
+                    Question {questionIndex + 1} of {questions.length}
+                </h2>
+                <div>
+                    <p className="question-title"> {questions[questionIndex]?.title}</p>
+                    <p>This question has {questions[questionIndex]?.answer.length} correct choice/s</p>
+                    <Divider/>
+                    <div className="choices-buttons">
+                        {questions[questionIndex]?.choices.map((choice) => (
+                            <Button
+                                key={choice.key}
+                                onClick={() => onChoiceSelect(choice)}
+                                className="choices">
+                                <p className="key">{choice.key}</p>
+                                <p style={{paddingLeft: "40%", margin: "5px"}}>
+                                    {choice.title}
+                                </p>
+                            </Button>
+                        ))}
+                    </div>
+                </div>
+            </Card>
         </div>
-      </Card>
-    </div>
-  );
+    );
 };
 export default Quiz;
