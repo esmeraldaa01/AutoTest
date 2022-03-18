@@ -3,6 +3,7 @@ import QuestionsTable from "./QuestionsTable";
 import React, {useEffect, useState} from "react";
 import QuestionForm from "./QuestionForm";
 import {useNavigate} from "react-router-dom";
+import {isDisabled} from "@testing-library/user-event/dist/utils";
 
 const cloneArray = (list) => {
     return list.map((object) => ({...object}));
@@ -52,20 +53,13 @@ const AdminPage = ({authorised}) => {
         setCreate(false);
     };
 
-    const invalidChoiceLength = (choices) => {
-        return (choices.length < 2) ? "Insert at least 2 options!" : null;
-    }
-
-    const validChoices = (choices) => {
-
-        let errorMessage = null;
-
+    const checkChoices = (choices) => {
+        let foundError = false;
         choices.forEach((choice) => {
             if (choice.title === "" || choice.key === "")
-                errorMessage = "Please fill the options!";
+                foundError = true;
         });
-
-        return errorMessage;
+        return foundError;
     };
 
     const closeModal = () => {
@@ -73,51 +67,34 @@ const AdminPage = ({authorised}) => {
     };
 
     const onSubmit = (question) => {
-
         if (!question.title) {
             setErrorCreate({
                 ...errorCreate,
-                title: "Please fill the name! "
+                title: "Please fill the title of the question!"
             });
             return;
         }
-
-        if (!question.answer) {
+        if (question.answer === []) {
             setErrorCreate({
-                answer: "Please fill the answer! "
+                ...errorCreate,
+                answer: "Select an answer!"
             });
             return;
         }
-
         if (question.choices.length < 2) {
             setErrorCreate({
+                ...errorCreate,
                 choices: "Insert at least 2 options!"
             });
             return;
         }
-
-        if (!validChoices(question.choices)) {
+        if (checkChoices(question.choices)) {
             setErrorCreate({
-                choices: "Please fill the options! "
+                ...errorCreate,
+                choices: "Please fill the options!"
             });
             return;
         }
-
-
-        // if (!question.title && !question.answer) {
-        //     setErrorCreate({
-        //         title: "Please fill the title of the question!",
-        //         answer: "Please select an answer for the question!",
-        //         choices: "Insert at least 2 choices!  Please Fill options!"
-        //     });
-        //     return;
-        //
-        // } else
-        //     setErrorCreate({title: null, answer: [], choices: null}); //
-        setErrorCreate({...errorCreate, title: null});
-        setErrorCreate({title: null, answer: [], choices: []}); //
-        setErrorCreate({title: null, answer: [], choices: []}) //
-        setErrorCreate({title: null, answer: [], choices: []}) //
 
         return editableQuestion ? onEdit(question) : onCreate(question);
     };
@@ -153,7 +130,6 @@ const AdminPage = ({authorised}) => {
 
     return (
         <div>
-
             <div>
                 {editableQuestion && !create && (
                     <QuestionForm
