@@ -36,7 +36,7 @@ const QuestionsTable = ({questions, onDelete, onEdit, onCreate}) => {
                 ))}
                 </tbody>
             </table>
-            <Button onClick={onCreate}>Create</Button>
+            <Button style={{marginLeft: '50%'}} onClick={onCreate}>Create</Button>
         </div>
     );
 };

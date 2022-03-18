@@ -1,18 +1,17 @@
 .container-res {
-    padding: 20px;
+    padding-top: 12%;
     width: 60vw;
-    height: 70vh;
+    height: 60vh;
     border-radius: 10px;
     position: absolute;
     left: 50%;
-    top: 45%;
     transform: translate(-50%, -50%);
     text-align: center;
     align-items: center;
     opacity: 0.9;
 }
 .card{
-    padding-bottom: 90px;
+    padding-bottom: 10px;
     background-color: #ececec;
     border-radius: 10px;
     padding-top: 90px;
@@ -20,8 +19,8 @@
 .buttons{
     display: flex;
     gap : 20px;
-    margin-top: 90px;
-    margin-bottom: 90px;
+    margin-top: 80px;
+    margin-bottom: 70px;
     padding-left: 22.5%;
 
 }
@@ -54,7 +53,8 @@
     width: 210px;
 }
 .ant-card-body {
-    padding: 24px;
+    padding: 20px;
+    margin-top: 10px;
     background-color: #ececec;
     border-radius: 15px;
 

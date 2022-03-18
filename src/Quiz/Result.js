@@ -78,12 +78,11 @@ const Result = ({ authorised }) => {
     setIsModalVisible(false);
   };
 
-  console.log(history, "h");
   return (
     <div className="container-res">
       <Card className="card" bordered={false}>
         <p className="result-header">
-          You score {result} of {data.length}
+          You score {result} of {history.length}
         </p>
         <div className="chart">
           <Doughnut data={data} />
@@ -111,7 +110,6 @@ const Result = ({ authorised }) => {
                   const isOptionCorrect = question.answer.indexOf(x.key) !== -1;
                   const isNotOption = question.userChoice.indexOf(x.key) == -1; 
                   return (
-                    <div>
                       <p
                         style={{
                           color: isOptionCorrect
@@ -123,7 +121,6 @@ const Result = ({ authorised }) => {
                       >
                         {x.key}
                       </p>
-                    </div>
                   );
                 })}
               </div>

@@ -195,7 +195,7 @@ const QuestionForm = ({
                         mode={"multiple"}
                         showSearch
                         placeholder="Select the correct answer"
-                        value={question.answer}
+                        value={question.answer || []}
                         onChange={onAnswerChange}
                         optionFilterProp="children"
                         filterOption={(input, option) =>
