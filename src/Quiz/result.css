@@ -67,3 +67,8 @@ width: 300px;
   /*height: 300px;*/
    margin-left: 30%;
 }
+.ant-modal-body{
+    overflow: scroll;
+    height: 65vh;
+    overflow-x: hidden;
+}

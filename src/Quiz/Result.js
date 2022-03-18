@@ -54,7 +54,7 @@ const Result = ({ authorised }) => {
   const data = {
     datasets: [
       {
-        data: [getTrueCount(), getTrueCount1()],
+        data: [`${getTrueCount()}`, `${getTrueCount1()}`],
         backgroundColor: ["green", "red"],
       },
     ],
