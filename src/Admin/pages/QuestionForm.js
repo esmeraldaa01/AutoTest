@@ -5,8 +5,7 @@ import Choices from "./Choices";
 import "../styles/QuestionForm.css";
 import {Modal} from "antd";
 
-const QuestionForm = ({
-                          errorCreate,
+const QuestionForm = ({  errorCreate,
                           onSubmit,
                           closeModal,
                           onCancel,
@@ -23,7 +22,6 @@ const QuestionForm = ({
             initialState.choices = currentQuestion.choices;
             initialState.id = currentQuestion.id;
         }
-
         return initialState;
     });
 
@@ -74,7 +72,7 @@ const QuestionForm = ({
     };
 
     const createChoice = () => {
-        setQuestion((previousQuestion) => {
+        setQuestion(( previousQuestion) => {
             const previousChoices = previousQuestion.choices;
 
             return {
@@ -118,61 +116,31 @@ const QuestionForm = ({
 
     const handleSave = () => {
         onSubmit(question);
-        if (!question.title && !question.answer && question.choices.length <= 2) {
+        if (!question.title) {
             setErrorEditing({
+                ...errorEditing,
                 title: "Question Title is required!",
+            })
+            return;
+        } else if (question.answer === null) {
+            setErrorEditing({
+              ...errorEditing,
                 answer: "Question Answer is required!",
-                choices: "Insert at least two choices and choose an answer."
-            })
-            return;
-        } else if (!question.title && !question.answer && (checkChoices(question.choices))) {
-            setErrorEditing({
-                title: "Question Title is required!",
-                answer: "Question Answer is required!",
-                choices: "Fill options !"
-            })
-            return;
-        } else if (!question.title && !question.answer && (checkChoices(question.choices))) {
-            setErrorEditing({
-                title: "Question Title is required!",
-                answer: "Question Answer is required!",
-                choices: "Fill options !"
-            })
-            return;
-        } else if (!question.answer && checkChoices(question.choices)) {
-            setErrorEditing({
-                choices: "Please fill the options !",
-                answer: "Question Answer is required!"
-            })
-            return;
-        } else if (question.title && !question.answer) {
-            setErrorEditing({
-                title: "Answer Title is required! Please choose an answer."
-            })
-            return;
-        } else if ((!question || !question.answer) && question.choices.length < 2) {
-            setErrorEditing({
-                choices: "Insert at least two choices and choose an answer."
-            });
-            return;
-        } else if (!question.answer && question.choices.length >= 2 && (!checkChoices(question.choices))) {
-            setErrorEditing({
-                title: "Question Answer is required! Choose an answer."
             })
             return;
         } else if (checkChoices(question.choices)) {
             setErrorEditing({
-                choices: "Choice Title and Choice Key are required. Please fill the options!"
-            });
+            ...errorEditing
+                ,choices: "Fill options !"
+            })
             return;
-        } else if (!question.title && question.answer && question.choices.length !== 0) {
+        } else if (question.choices.length < 2) {
             setErrorEditing({
-                title: "Question Title is required! Please write a question title."
-            });
+                ...errorEditing,
+                choices: "There should more than 2 options !",
+            })
             return;
-        } else setErrorEditing({title: null, answer: [], choices: []}); //
-
-
+        }
         setQuestion({title: "", answer: [], choices: [], id: 0}); //
         closeModal();
     };

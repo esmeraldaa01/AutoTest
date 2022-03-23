@@ -44,8 +44,7 @@ const Quiz = ({authorised}) => {
 
         if (arrayOfChoices.length === questions[questionIndex].answer.length) {
 
-            //TODO: CHECK THE ORDER OF CORRECT ANSWERS
-            if (JSON.stringify(arrayOfChoices) === JSON.stringify(questions[questionIndex].answer)) {
+            if (JSON.stringify(arrayOfChoices.sort()) === JSON.stringify(questions[questionIndex].answer.sort())) {
                 setScore(score + 1);
                 onUpdatingResults(true);
             } else

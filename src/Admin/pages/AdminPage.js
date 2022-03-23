@@ -3,7 +3,7 @@ import QuestionsTable from "./QuestionsTable";
 import React, {useEffect, useState} from "react";
 import QuestionForm from "./QuestionForm";
 import {useNavigate} from "react-router-dom";
-import {isDisabled} from "@testing-library/user-event/dist/utils";
+
 
 const cloneArray = (list) => {
     return list.map((object) => ({...object}));
@@ -36,9 +36,7 @@ const AdminPage = ({authorised}) => {
     const onEdit = (question) => {
         setQuestions((previousQuestions) => {
             const newQuestions = cloneArray(previousQuestions);
-            const index = previousQuestions.findIndex(
-                (question) => question.id === editableQuestion.id
-            );
+            const index = previousQuestions.findIndex((question) => question.id === editableQuestion.id);
             newQuestions[index] = question;
             return newQuestions;
         });
@@ -74,7 +72,7 @@ const AdminPage = ({authorised}) => {
             });
             return;
         }
-        if (question.answer === []) {
+        if (question.answer === null) {
             setErrorCreate({
                 ...errorCreate,
                 answer: "Select an answer!"
@@ -107,7 +105,6 @@ const AdminPage = ({authorised}) => {
 
     const onDelete = (record) => {
         setQuestions(questions.filter((question) => question.id !== record.id));
-        console.log("a record", record.id)
     };
 
 
